@@ -12,6 +12,7 @@ public class Contato implements Comparable<Contato> {
     public void setNome(String nome) {
         this.nome = nome;
     }
+
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
@@ -23,42 +24,38 @@ public class Contato implements Comparable<Contato> {
     public String getNome() {
         return nome;
     }
+
     public String getTelefone() {
         return telefone;
     }
+
     public String getEmail() {
         return email;
     }
 
     @Override
     public String toString() {
-        return " [Nome: " + getNome() + ", Telefone: " + getTelefone() + ", e-mail: " + getEmail() + "]";
-    }  
-
-
-     // Método equals sobrecarregado para comparar por tipo (nome, email ou telefone)
-     @Override
-     public boolean equals(Object obj) {
-         if (this == obj) {
-             return true;
-         }
-         if (obj == null || getClass() != obj.getClass()) {
-             return false;
-         }
-         Contato outro = (Contato) obj;
- 
-         // Aqui você pode alterar a lógica para definir qual critério deseja usar na comparação
-         // Exemplo: comparar pelo nome
-         return this.nome.equalsIgnoreCase(outro.getNome()) ||
-                this.email.equalsIgnoreCase(outro.getEmail()) ||
-                this.telefone.equals(outro.getTelefone());
-     }
-
-    // Implementação da interface Comparable, comparando o nome dos contatos
-    @Override
-    public int compareTo(Contato outro) {
-        return this.nome.compareToIgnoreCase(outro.getNome());  // Ordena por nome de forma case-insensitive
+        return "[Nome: " + nome + ", Telefone: " + telefone + ", e-mail: " + email + "]";
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
 
+        Contato outro = (Contato) obj;
+
+        return (this.nome != null && this.nome.equalsIgnoreCase(outro.getNome())) ||
+               (this.email != null && this.email.equalsIgnoreCase(outro.getEmail())) ||
+               (this.telefone != null && this.telefone.equals(outro.getTelefone()));
+    }
+
+    @Override
+    public int compareTo(Contato outro) {
+        return this.nome.compareToIgnoreCase(outro.getNome());
+    }
 }

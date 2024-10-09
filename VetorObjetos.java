@@ -1,119 +1,95 @@
+
 public class VetorObjetos {
+    private Contato[] contatos;
+    private int tamanho;
 
-	private Object[] elementos; 
-	private int tamanho;
+    public VetorObjetos(int capacidade) {
+        contatos = new Contato[capacidade];
+        tamanho = 0;
+    }
 
-	public VetorObjetos(int capacidade){
-		this.elementos = new Object[capacidade];
-		this.tamanho = 0;
-	}
+    public void adiciona(Contato contato) {
+        if (tamanho == contatos.length) {
+            // Redimensionar o vetor automaticamente (duplicar o tamanho)
+            Contato[] novoArray = new Contato[contatos.length * 2];
+            System.arraycopy(contatos, 0, novoArray, 0, contatos.length);
+            contatos = novoArray;
+        }
+        contatos[tamanho] = contato;
+        tamanho++;
+    }
 
-	public boolean adiciona(Object elemento) {
-		this.aumentaCapacidade();
-		if (this.tamanho < this.elementos.length){
-			this.elementos[this.tamanho] = elemento;
-			this.tamanho++;
-			return true;
-		} 
-		return false;
-	}
-	
-	public boolean adiciona(int posicao, Object elemento){	
-		if (!(posicao >= 0 && posicao < tamanho)){
-			throw new IllegalArgumentException("Posição inválida");
-		}
-		this.aumentaCapacidade();
-		//mover todos os elementos
-		for (int i=this.tamanho-1; i>=posicao; i--){
-			this.elementos[i+1] = this.elementos[i];
-		}
-		this.elementos[posicao] = elemento;
-		this.tamanho++;
-		return true;
-	}
-	
-	private void aumentaCapacidade(){
-		if (this.tamanho == this.elementos.length){
-			Object[] elementosNovos = new Object[this.elementos.length * 2];
-			for (int i=0; i<this.elementos.length; i++){
-				elementosNovos[i] = this.elementos[i];
-			}
-			this.elementos = elementosNovos;
-		}
-	}
-	
-	public Object busca(int posicao){
-		if (!(posicao >= 0 && posicao < tamanho)){
-			throw new IllegalArgumentException("Posição inválida");
-		} 
-		return this.elementos[posicao];
-	}
-	
-	public int busca(Object elemento){
-		for (int i=0; i<this.tamanho; i++){
-			if (this.elementos[i].equals(elemento)){
-				return i;
-			}
-		}
-		return -1;
-	}
-	
-	public void remove(int posicao){
-		if (!(posicao >= 0 && posicao < tamanho)){
-			throw new IllegalArgumentException("Posição inválida");
-		}
-		for (int i=posicao; i<this.tamanho-1; i++){
-			this.elementos[i] = this.elementos[i+1];
-		}
-		this.tamanho--;
-	}
-	
-	public int tamanho(){
-		return this.tamanho;
-	}
+    public void adiciona(int posicao, Contato contato) {
+        if (posicao >= 0 && posicao <= tamanho) {
+            if (tamanho == contatos.length) {
+                // Redimensionar o vetor automaticamente (duplicar o tamanho)
+                Contato[] novoArray = new Contato[contatos.length * 2];
+                System.arraycopy(contatos, 0, novoArray, 0, contatos.length);
+                contatos = novoArray;
+            }
+            for (int i = tamanho - 1; i >= posicao; i--) {
+                contatos[i + 1] = contatos[i];
+            }
+            contatos[posicao] = contato;
+            tamanho++;
+        }
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder s = new StringBuilder();
-		s.append("[");
-		for (int i=0; i<this.tamanho-1; i++){
-			s.append(this.elementos[i]);
-			s.append(", ");
-		}
-		if (this.tamanho>0){
-			s.append(this.elementos[this.tamanho-1]);
-		}
-		s.append("]");
-		return s.toString();
-	}
+    public int tamanho() {
+        return tamanho;
+    }
 
-	public int capacidade() {
-		return this.elementos.length;
-	}
+    public int capacidade() {
+        return contatos.length;
+    }
 
-	// Método Bubble Sort para ordenar os elementos
-    @SuppressWarnings("unchecked")
-	public void ordena() {
-        for (int i = 0; i < this.tamanho - 1; i++) {
-            for (int j = 0; j < this.tamanho - 1 - i; j++) {
-                // Verifica se os elementos são comparáveis
-                if (this.elementos[j] instanceof Comparable && this.elementos[j + 1] instanceof Comparable) {
-                    @SuppressWarnings("rawtypes")
-					Comparable obj1 = (Comparable) this.elementos[j];
-                    @SuppressWarnings("rawtypes")
-					Comparable obj2 = (Comparable) this.elementos[j + 1];
+    public Contato busca(int posicao) {
+        if (posicao >= 0 && posicao < tamanho) {
+            return contatos[posicao];
+        }
+        return null;
+    }
 
-                    // Compara e troca se necessário
-                    if (obj1.compareTo(obj2) > 0) {
-                        Object temp = this.elementos[j];
-                        this.elementos[j] = this.elementos[j + 1];
-                        this.elementos[j + 1] = temp;
-                    }
-                } else {
-                    throw new IllegalArgumentException("Elementos não comparáveis.");
+    public int busca(Contato contato) {
+        for (int i = 0; i < tamanho; i++) {
+            if (contatos[i].equals(contato)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public boolean remove(int posicao) {
+        if (posicao >= 0 && posicao < tamanho) {
+            for (int i = posicao; i < tamanho - 1; i++) {
+                contatos[i] = contatos[i + 1];
+            }
+            contatos[tamanho - 1] = null;
+            tamanho--;
+            return true;
+        }
+        return false;
+    }
+
+    public void ordena() {
+        Contato aux;
+        for (int i = 0; i < tamanho - 1; i++) {
+            for (int j = i + 1; j < tamanho; j++) {
+                if (contatos[i].compareTo(contatos[j]) > 0) { 
+                    aux = contatos[i];
+                    contatos[i] = contatos[j];
+                    contatos[j] = aux;
                 }
             }
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < tamanho; i++) {
+            builder.append(contatos[i]).append("\n");
+        }
+        return builder.toString();
+    }
 }
